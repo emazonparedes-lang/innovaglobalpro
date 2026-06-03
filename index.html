@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InnovaGlobalPro – Bilingüe / Bilingual · ES | EN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════
+   VARIABLES & RESET
+════════════════════════════════════*/
+:root{
+  --navy:#082035;--teal:#0e8a78;--teal2:#12b89e;--teal3:#1ed4bb;
+  --gold:#d4991a;--gold2:#f0b830;--cream:#f5f9f8;--white:#ffffff;
+  --gray:#4e6070;--light:#e6f4f1;--dark2:#061728;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--dark2);color:var(--white);overflow-x:hidden}
+
+/* ═══════════════════════════════════
+   TOPBAR
+════════════════════════════════════*/
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  background:rgba(6,23,40,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(30,212,187,.2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 4%;gap:12px;min-height:58px;
+}
+.topbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.brand-circle{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:700;
+  color:var(--dark2);border:1.5px solid rgba(30,212,187,.35);
+}
+.brand-text{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--white);white-space:nowrap}
+.brand-sub{font-size:.58rem;color:var(--teal2);letter-spacing:2px;text-transform:uppercase;display:block}
+
+.lang-switcher{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(30,212,187,.2);
+  border-radius:40px;padding:3px 4px;
+}
+.lbtn{
+  padding:6px 18px;border-radius:30px;font-size:.76rem;font-weight:700;
+  cursor:pointer;border:none;transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif;
+  letter-spacing:.5px;
+}
+.lbtn-es{background:var(--teal);color:var(--dark2)}
+.lbtn-en{background:transparent;color:rgba(255,255,255,.5)}
+.lbtn-en.en-active{background:var(--gold);color:var(--dark2)}
+.lbtn-es.es-inactive{background:transparent;color:rgba(255,255,255,.5)}
+
+.view-toggle{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(30,212,187,.08);border:1px solid rgba(30,212,187,.22);
+  border-radius:8px;padding:6px 12px;
+  font-size:.72rem;color:var(--teal2);font-weight:700;cursor:pointer;
+  transition:all .3s;white-space:nowrap;letter-spacing:.3px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.view-toggle:hover{background:rgba(30,212,187,.16)}
+.vtdot{width:7px;height:7px;border-radius:50%;background:var(--teal3);flex-shrink:0}
+
+/* ═══════════════════════════════════
+   LAYOUT
+════════════════════════════════════*/
+.main-wrap{padding-top:58px;min-height:calc(100vh - 58px)}
+
+/* SPLIT */
+.split-wrap{display:grid;grid-template-columns:1fr 3px 1fr;min-height:calc(100vh - 58px)}
+.divider{
+  background:linear-gradient(180deg,var(--teal3),var(--gold),var(--teal3));
+  position:relative;
+}
+.divider::after{
+  content:'⟺';position:sticky;top:50vh;
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;background:var(--dark2);
+  border:1px solid rgba(30,212,187,.4);border-radius:50%;
+  font-size:.72rem;color:var(--teal2);margin-left:-12px;
+  box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;
+}
+.panel{overflow-y:auto;max-height:calc(100vh - 58px);scroll-behavior:smooth}
+.panel::-webkit-scrollbar{width:3px}
+.panel::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px}
+
+/* SINGLE */
+.single-wrap{display:none}
+.single-tabs{
+  display:flex;border-bottom:2px solid rgba(30,212,187,.12);
+  background:rgba(6,23,40,.9);position:sticky;top:58px;z-index:100;
+}
+.stab{
+  padding:13px 28px;font-size:.8rem;font-weight:700;cursor:pointer;
+  border:none;background:transparent;color:var(--gray);
+  font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.5px;
+  border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .3s;
+}
+.stab-es.on{color:var(--teal2);border-bottom-color:var(--teal2)}
+.stab-en.on{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* STATES */
+body.mode-split .split-wrap{display:grid}
+body.mode-split .single-wrap{display:none}
+body.mode-single .split-wrap{display:none}
+body.mode-single .single-wrap{display:block}
+
+/* ═══════════════════════════════════
+   PANEL FLAG
+════════════════════════════════════*/
+.pflag{
+  position:sticky;top:0;z-index:20;
+  padding:9px 22px;display:flex;align-items:center;gap:7px;
+  font-size:.65rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+}
+.pflag-es{background:rgba(6,23,40,.96);border-bottom:2px solid var(--teal);color:var(--teal2)}
+.pflag-en{background:rgba(6,23,40,.96);border-bottom:2px solid var(--gold);color:var(--gold)}
+
+/* ═══════════════════════════════════
+   HERO SECTION
+════════════════════════════════════*/
+.p-hero{
+  padding:52px 32px 40px;text-align:center;position:relative;overflow:hidden;
+  border-bottom:1px solid rgba(30,212,187,.1);
+}
+.p-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(18,184,158,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.p-hero .pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(18,184,158,.1);border:1px solid rgba(18,184,158,.28);
+  color:var(--teal3);padding:4px 12px;border-radius:20px;
+  font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+}
+.p-hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.5rem,3vw,2.4rem);line-height:1.12;
+  color:var(--white);margin-bottom:14px;
+}
+.p-hero h1 em{color:var(--teal3);font-style:normal}
+.panel-en .p-hero h1 em{color:var(--gold)}
+.p-hero p{font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.7;max-width:400px;margin:0 auto 24px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn-glow{
+  background:linear-gradient(135deg,var(--teal),var(--teal2));color:var(--dark2);
+  padding:11px 26px;border-radius:8px;font-weight:700;font-size:.82rem;
+  text-decoration:none;transition:all .25s;box-shadow:0 5px 22px rgba(14,184,158,.4);border:none;cursor:pointer;
+}
+.btn-glow:hover{opacity:.9;transform:translateY(-2px)}
+.panel-en .btn-glow{background:linear-gradient(135deg,#b8841a,var(--gold))}
+.btn-ghost{
+  border:1.5px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8);
+  padding:10px 22px;border-radius:8px;font-weight:600;font-size:.82rem;
+  text-decoration:none;transition:all .25s;background:transparent;
+}
+.btn-ghost:hover{border-color:var(--teal2);background:rgba(18,184,158,.07)}
+
+/* ═══════════════════════════════════
+   MARQUEE
+════════════════════════════════════*/
+.marquee-wrap{
+  background:var(--navy);padding:12px 0;overflow:hidden;
+  border-top:1px solid rgba(18,184,158,.12);border-bottom:1px solid rgba(18,184,158,.12);
+}
+.marquee-track{
+  display:flex;white-space:nowrap;
+  animation:marquee 30s linear infinite;
+}
+.marquee-track:hover{animation-play-state:paused}
+.mitem{
+  display:inline-flex;align-items:center;gap:8px;padding:0 26px;
+  color:rgba(255,255,255,.5);font-size:.72rem;letter-spacing:1px;text-transform:uppercase;
+}
+.mdot{width:5px;height:5px;border-radius:50%;background:var(--teal2);flex-shrink:0}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ═══════════════════════════════════
+   STATS
+════════════════════════════════════*/
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(18,184,158,.1);border-bottom:1px solid rgba(18,184,158,.1);
+}
+.stat-box{
+  padding:22px 14px;text-align:center;
+  border-right:1px solid rgba(18,184,158,.1);
+}
+.stat-box:last-child{border-right:none}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--teal2);font-weight:700;line-height:1}
+.panel-en .stat-num{color:var(--gold)}
+.stat-lbl{font-size:.62rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* ═══════════════════════════════════
+   SECTION LABELS
+════════════════════════════════════*/
+.sec-head{padding:28px 28px 0}
+.sec-tag{
+  color:var(--teal);font-size:.65rem;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;margin-bottom:6px;display:block;
+}
+.panel-en .sec-tag{color:var(--gold2)}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2;
+  margin-bottom:8px;color:var(--white);
+}
+.sec-sub{font-size:.82rem;color:var(--gray);line-height:1.7;margin-bottom:4px}
+
+/* ═══════════════════════════════════
+   ABOUT / TWO-COL
+════════════════════════════════════*/
+.about-section{padding:32px 28px;background:rgba(255,255,255,.018)}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.check-list li{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:var(--gray);line-height:1.5}
+.check-list li::before{
+  content:'✓';flex-shrink:0;width:18px;height:18px;
+  background:var(--teal);color:white;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.58rem;font-weight:800;margin-top:1px;
+}
+
+/* ═══════════════════════════════════
+   SERVICES GRID
+════════════════════════════════════*/
+.services-section{padding:28px 28px 8px}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc-card{
+  border-radius:12px;padding:16px 14px;
+  border:1px solid rgba(30,212,187,.12);
+  background:rgba(255,255,255,.025);
+  position:relative;overflow:hidden;transition:all .3s;
+}
+.svc-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:60px;height:60px;
+  background:linear-gradient(135deg,rgba(18,184,158,.07),transparent);
+  border-radius:0 12px 0 60px;
+}
+.svc-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(14,184,158,.12);border-color:var(--teal2)}
+.panel-en .svc-card:hover{border-color:var(--gold)}
+.svc-icon{font-size:1.3rem;margin-bottom:8px;display:block}
+.svc-card h3{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;margin-bottom:5px;color:var(--white);line-height:1.3}
+.svc-card p{font-size:.72rem;color:var(--gray);line-height:1.55;margin-bottom:8px}
+.svc-price{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--teal2);font-weight:700}
+.panel-en .svc-price{color:var(--gold)}
+.svc-price sup{font-size:.7rem;vertical-align:super}
+.svc-tag{
+  display:inline-block;margin-top:4px;font-size:.6rem;font-weight:700;
+  color:var(--teal);letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 8px;background:var(--light);border-radius:20px;color:var(--teal);
+}
+.panel-en .svc-tag{background:rgba(212,153,26,.1);color:var(--gold2)}
+
+/* ═══════════════════════════════════
+   GALLERY
+════════════════════════════════════*/
+.gallery-section{padding:28px 28px 12px;background:rgba(8,32,53,.7)}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.gallery-grid figure{
+  margin:0;position:relative;overflow:hidden;border-radius:8px;
+  border:1px solid rgba(18,184,158,.12);height:100px;
+  background:rgba(18,184,158,.05);display:flex;align-items:center;justify-content:center;
+}
+.gallery-grid figure img{
+  width:100%;height:100%;object-fit:cover;transition:transform .4s;display:block;
+}
+.gallery-grid figure:hover img{transform:scale(1.06)}
+.gallery-grid figure:hover{border-color:var(--teal2)}
+.gal-placeholder{
+  font-size:1.6rem;opacity:.3;
+  display:flex;align-items:center;justify-content:center;width:100%;height:100%;
+}
+
+/* ═══════════════════════════════════
+   PROCESS
+════════════════════════════════════*/
+.process-section{padding:28px 28px}
+.process-steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.pstep{
+  background:rgba(255,255,255,.025);border:1px solid rgba(18,184,158,.1);
+  border-radius:12px;padding:16px;text-align:center;
+}
+.pstep-num{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,.04);border:2px solid var(--teal);
+  color:var(--teal);font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;
+}
+.panel-en .pstep-num{border-color:var(--gold);color:var(--gold)}
+.pstep h4{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:5px}
+.pstep p{font-size:.72rem;color:var(--gray);line-height:1.5}
+
+/* ═══════════════════════════════════
+   TESTIMONIALS
+════════════════════════════════════*/
+.testi-section{padding:28px 28px}
+.testi-grid{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.testi-card{
+  background:rgba(255,255,255,.025);border:1px solid rgba(30,212,187,.1);
+  border-radius:12px;padding:18px;
+}
+.testi-stars{color:var(--gold2);font-size:.8rem;margin-bottom:8px;letter-spacing:2px}
+.testi-quote{font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.65;font-style:italic;margin-bottom:12px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  color:white;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;
+}
+.testi-name{font-weight:700;font-size:.78rem;color:var(--white)}
+.testi-role{font-size:.68rem;color:var(--gray)}
+
+/* ═══════════════════════════════════
+   PRODUCTS
+════════════════════════════════════*/
+.products-section{
+  padding:28px 28px;
+  background:linear-gradient(135deg,rgba(8,32,53,.8),rgba(6,23,40,.9));
+}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.prod-item{
+  background:rgba(255,255,255,.04);border:1px solid rgba(18,184,158,.15);
+  border-radius:10px;padding:12px 12px;
+  display:flex;align-items:center;gap:9px;
+  transition:all .3s;
+}
+.prod-item:hover{background:rgba(18,184,158,.08);border-color:var(--teal2);transform:translateY(-2px)}
+.panel-en .prod-item:hover{border-color:var(--gold)}
+.prod-icon{font-size:1.15rem;flex-shrink:0}
+.prod-name{font-size:.74rem;color:rgba(255,255,255,.78);font-weight:600;line-height:1.3}
+
+/* ═══════════════════════════════════
+   FORMS SECTION
+════════════════════════════════════*/
+.forms-section{padding:32px 28px;background:rgba(255,255,255,.018)}
+.forms-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.ftab{
+  padding:7px 18px;border-radius:30px;border:1.5px solid var(--teal);
+  background:transparent;color:var(--teal);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.76rem;font-weight:700;
+  cursor:pointer;transition:all .25s;letter-spacing:.3px;
+}
+.ftab.active,.ftab:hover{background:var(--teal);color:var(--dark2)}
+.panel-en .ftab{border-color:var(--gold);color:var(--gold)}
+.panel-en .ftab.active,.panel-en .ftab:hover{background:var(--gold);color:var(--dark2)}
+
+.fpanel{display:none}
+.fpanel.active{display:block}
+.fcard{
+  background:rgba(255,255,255,.04);border-radius:16px;
+  padding:28px 24px;border:1px solid rgba(18,184,158,.15);
+}
+.fcard h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white);margin-bottom:5px}
+.fcard .fdesc{font-size:.78rem;color:var(--gray);margin-bottom:20px;line-height:1.5}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fgroup{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fgroup label{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.8px}
+.fgroup input,
+.fgroup select,
+.fgroup textarea{
+  padding:10px 12px;border:1.5px solid rgba(18,184,158,.2);border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;
+  color:var(--white);background:rgba(255,255,255,.05);
+  transition:all .2s;outline:none;width:100%;
+}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{
+  border-color:var(--teal);background:rgba(14,138,120,.08);
+  box-shadow:0 0 0 3px rgba(14,138,120,.1);
+}
+.panel-en .fgroup input:focus,.panel-en .fgroup select:focus,.panel-en .fgroup textarea:focus{
+  border-color:var(--gold);background:rgba(212,153,26,.06);
+  box-shadow:0 0 0 3px rgba(212,153,26,.1);
+}
+.fgroup input::placeholder,.fgroup textarea::placeholder{color:rgba(138,155,181,.4)}
+.fgroup textarea{resize:vertical;min-height:90px;line-height:1.5}
+.fgroup select{cursor:pointer}
+.fgroup select option{background:var(--navy)}
+.chk-group{display:flex;flex-direction:column;gap:8px}
+.chk-item{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;color:var(--gray)}
+.chk-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--teal);cursor:pointer;flex-shrink:0}
+.ftrust{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--gray);margin-bottom:14px;margin-top:6px}
+.btn-submit{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  color:var(--dark2);border:none;border-radius:9px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;
+  cursor:pointer;transition:all .25s;letter-spacing:.3px;
+}
+.btn-submit:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 8px 28px rgba(14,184,158,.35)}
+.panel-en .btn-submit{background:linear-gradient(135deg,#b8841a,var(--gold))}
+.paypal-submit{
+  width:100%;padding:11px;background:#FFC439;color:#003087;
+  border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s;
+  margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.paypal-submit:hover{background:#f0b429;transform:translateY(-2px)}
+.form-success{display:none;text-align:center;padding:28px 16px}
+.form-success .checkmark{
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-size:1.4rem;
+}
+.form-success h4{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);margin-bottom:8px}
+.form-success p{font-size:.8rem;color:var(--gray)}
+
+/* ═══════════════════════════════════
+   CTA SECTION
+════════════════════════════════════*/
+.cta-section{
+  padding:48px 28px;text-align:center;
+  background:linear-gradient(135deg,var(--teal) 0%,#086456 100%);
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(0,0,0,.2),transparent);
+  pointer-events:none;
+}
+.cta-inner{position:relative;z-index:2}
+.cta-section h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,3vw,2rem);color:var(--white);margin-bottom:10px;
+}
+.cta-section p{font-size:.85rem;color:rgba(255,255,255,.75);margin-bottom:8px;line-height:1.6;max-width:360px;margin-left:auto;margin-right:auto}
+.cta-contact{font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:6px}
+.cta-phones{font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:22px;line-height:1.8}
+.cta-phones a{color:var(--white);text-decoration:none;font-weight:600}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-white{
+  background:var(--white);color:var(--teal);padding:11px 28px;
+  border-radius:8px;font-weight:700;font-size:.82rem;
+  text-decoration:none;transition:all .2s;
+}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.2)}
+.btn-outline-white{
+  border:1.5px solid rgba(255,255,255,.45);color:var(--white);
+  padding:10px 24px;border-radius:8px;font-weight:600;font-size:.82rem;
+  text-decoration:none;transition:all .2s;background:transparent;
+}
+.btn-outline-white:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
+
+/* ═══════════════════════════════════
+   FOOTER
+════════════════════════════════════*/
+.p-footer{background:rgba(6,23,40,.85);padding:32px 28px 24px}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:28px;margin-bottom:28px}
+.foot-brand p{font-size:.78rem;color:rgba(255,255,255,.4);line-height:1.7;max-width:220px;margin-top:8px}
+.foot-name{color:var(--white);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700}
+.foot-col h5{color:var(--white);font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.foot-col ul a{color:rgba(255,255,255,.38);text-decoration:none;font-size:.76rem;transition:color .2s}
+.foot-col ul a:hover{color:var(--teal2)}
+.panel-en .foot-col ul a:hover{color:var(--gold)}
+.social-row{display:flex;gap:8px;margin-top:14px}
+.sbtn{
+  width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);
+  font-size:.72rem;display:flex;align-items:center;justify-content:center;
+  text-decoration:none;font-weight:700;transition:all .2s;
+}
+.sbtn:hover{background:rgba(18,184,158,.14);border-color:var(--teal2);color:var(--teal2)}
+.panel-en .sbtn:hover{background:rgba(212,153,26,.14);border-color:var(--gold);color:var(--gold)}
+.foot-contact{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.fci{font-size:.74rem;color:rgba(255,255,255,.38);display:flex;gap:6px;align-items:flex-start;line-height:1.5}
+.fci a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s}
+.fci a:hover{color:var(--teal2)}
+.foot-bottom{
+  border-top:1px solid rgba(255,255,255,.07);padding-top:18px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:8px;font-size:.7rem;color:rgba(255,255,255,.25);
+}
+.foot-bottom span{color:var(--teal2)}
+.panel-en .foot-bottom span{color:var(--gold)}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════*/
+@media(max-width:1100px){
+  .svc-grid{grid-template-columns:1fr}
+  .prod-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .frow{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .split-wrap{grid-template-columns:1fr}
+  .divider{display:none}
+  .panel{max-height:none}
+  .view-toggle{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .process-steps{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .svc-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr}
+  .topbar{flex-wrap:wrap}
+}
+</style>
+</head>
+<body class="mode-split">
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <a href="https://innovaglobalpro.com/" class="topbar-brand" target="_blank">
+    <div class="brand-circle">IG</div>
+    <div>
+      <span class="brand-text">InnovaGlobalPro</span>
+      <span class="brand-sub">EST. 2020 · Marignane, France</span>
+    </div>
+  </a>
+  <div class="lang-switcher">
+    <button class="lbtn lbtn-es" id="pill-es" onclick="setView('es')">🇪🇸 Español</button>
+    <button class="lbtn lbtn-en" id="pill-en" onclick="setView('en')">🇺🇸 English</button>
+  </div>
+  <button class="view-toggle" id="vtbtn" onclick="toggleView()">
+    <div class="vtdot"></div>
+    <span id="vtlabel">Vista Dividida ON</span>
+  </button>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main-wrap">
+
+<!-- SPLIT WRAP -->
+<div class="split-wrap" id="splitWrap">
+
+<!-- ══════════════════════════════════
+     PANEL ESPAÑOL
+══════════════════════════════════ -->
+<div class="panel panel-es" id="panel-es">
+<div class="pflag pflag-es">🇪🇸 &nbsp;Español</div>
+
+<!-- HERO -->
+<section class="p-hero">
+  <div class="pills">
+    <span class="pill">🎓 Est. 2020</span>
+    <span class="pill">⭐ 5 Estrellas</span>
+    <span class="pill">🌍 Alcance Global</span>
+  </div>
+  <h1>Conecta <em>Innovación</em><br>con Resultados Tangibles<br>en Negocios y Academia</h1>
+  <p>InnovaGlobalPro es tu socio estratégico para el crecimiento intelectual y empresarial — análisis de datos, planes de negocios, marketing digital, implementación de IA, corrección de tesis y mucho más.</p>
+  <div class="hero-btns">
+    <a href="https://innovaglobalpro.com/formulario_innovaglobalpro.html" class="btn-glow" target="_blank">Explorar Servicios →</a>
+    <a href="#es-about" class="btn-ghost">Conocer más</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="mitem"><span class="mdot"></span>Análisis de Datos</span>
+    <span class="mitem"><span class="mdot"></span>Modelado BPMN</span>
+    <span class="mitem"><span class="mdot"></span>Plan de Negocios Comercial</span>
+    <span class="mitem"><span class="mdot"></span>Plan Agrícola</span>
+    <span class="mitem"><span class="mdot"></span>Plan Ganadero</span>
+    <span class="mitem"><span class="mdot"></span>Plan Alimentario</span>
+    <span class="mitem"><span class="mdot"></span>Expansión Internacional</span>
+    <span class="mitem"><span class="mdot"></span>Marketing Digital</span>
+    <span class="mitem"><span class="mdot"></span>Inteligencia Artificial</span>
+    <span class="mitem"><span class="mdot"></span>Corrección de Tesis</span>
+    <span class="mitem"><span class="mdot"></span>Artículos Científicos</span>
+    <span class="mitem"><span class="mdot"></span>E-Books y Cursos</span>
+    <span class="mitem"><span class="mdot"></span>Diseño Web</span>
+    <span class="mitem"><span class="mdot"></span>Análisis de Datos</span>
+    <span class="mitem"><span class="mdot"></span>Modelado BPMN</span>
+    <span class="mitem"><span class="mdot"></span>Plan de Negocios Comercial</span>
+    <span class="mitem"><span class="mdot"></span>Plan Agrícola</span>
+    <span class="mitem"><span class="mdot"></span>Plan Ganadero</span>
+    <span class="mitem"><span class="mdot"></span>Plan Alimentario</span>
+    <span class="mitem"><span class="mdot"></span>Expansión Internacional</span>
+    <span class="mitem"><span class="mdot"></span>Marketing Digital</span>
+    <span class="mitem"><span class="mdot"></span>Inteligencia Artificial</span>
+    <span class="mitem"><span class="mdot"></span>Corrección de Tesis</span>
+    <span class="mitem"><span class="mdot"></span>Artículos Científicos</span>
+    <span class="mitem"><span class="mdot"></span>E-Books y Cursos</span>
+    <span class="mitem"><span class="mdot"></span>Diseño Web</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-box"><div class="stat-num">10+</div><div class="stat-lbl">Clientes</div></div>
+  <div class="stat-box"><div class="stat-num">5 ★</div><div class="stat-lbl">Valoración</div></div>
+  <div class="stat-box"><div class="stat-num">5+</div><div class="stat-lbl">Años de Exp.</div></div>
+  <div class="stat-box"><div class="stat-num">17</div><div class="stat-lbl">Áreas de Servicio</div></div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-section" id="es-about">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Quiénes Somos</span>
+    <h2 class="sec-title">Soluciones Integrales para tu Crecimiento Profesional</h2>
+    <p class="sec-sub">Desde 2020, InnovaGlobalPro transforma negocios y carreras académicas con un enfoque integral y orientado a resultados — combinando consultoría estratégica, análisis de datos y tecnología de vanguardia.</p>
+  </div>
+  <ul class="check-list">
+    <li>Análisis de datos, estadísticas y toma de decisiones basada en evidencia</li>
+    <li>Modelado de procesos BPMN y desarrollo de planes de negocios</li>
+    <li>Planes de negocios agrícolas, ganaderos, alimentarios y comerciales</li>
+    <li>Estrategias y kits de expansión internacional para PYMES</li>
+    <li>Marketing digital, implementación de IA y consultoría de marketing</li>
+    <li>Corrección de tesis, artículos científicos, e-books y cursos</li>
+    <li>Diseño web, videos de promoción y diseño de logotipos</li>
+  </ul>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="es-services">
+  <div class="sec-head">
+    <span class="sec-tag">Nuestra Especialidad</span>
+    <h2 class="sec-title">17 Servicios Integrales con Precios</h2>
+    <p class="sec-sub">Un ecosistema completo de soluciones profesionales que cubre negocios, academia, tecnología y expansión global.</p>
+  </div>
+  <div class="svc-grid" style="margin-top:18px">
+    <div class="svc-card"><span class="svc-icon">📊</span><h3>Análisis de Datos</h3><p>Métodos estadísticos avanzados, modelos predictivos y visualización de datos para decisiones basadas en evidencia en negocios e investigación académica.</p><div class="svc-price">Consultar</div><span class="svc-tag">Analytics</span></div>
+    <div class="svc-card"><span class="svc-icon">🔄</span><h3>Modelado de Procesos BPMN</h3><p>Diagramas BPMN profesionales para optimizar flujos de trabajo, eliminar cuellos de botella y documentar operaciones con claridad.</p><div class="svc-price">Consultar</div><span class="svc-tag">Diseño de Procesos</span></div>
+    <div class="svc-card"><span class="svc-icon">🏢</span><h3>Plan de Negocios Comercial</h3><p>Planes de negocios integrales: análisis de mercado, proyecciones financieras, estrategia competitiva y documentación lista para inversores.</p><div class="svc-price"><sup>$</sup>150 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Negocios</span></div>
+    <div class="svc-card"><span class="svc-icon">🌾</span><h3>Plan de Negocios Agrícola</h3><p>Planes especializados para agronegocios: análisis de cultivos, estrategias de sostenibilidad, diseño de cadena de suministro y modelos de rentabilidad.</p><div class="svc-price">Consultar</div><span class="svc-tag">Agronegocios</span></div>
+    <div class="svc-card"><span class="svc-icon">🐄</span><h3>Plan de Negocios Ganadero</h3><p>Planes a medida para operaciones ganaderas: gestión de hato, costos veterinarios, métricas de productividad y estrategia de mercado.</p><div class="svc-price">Consultar</div><span class="svc-tag">Ganadería</span></div>
+    <div class="svc-card"><span class="svc-icon">🍽️</span><h3>Plan de Negocios Alimentario</h3><p>Planificación integral para la industria alimentaria: producción, procesamiento, distribución, branding, cumplimiento normativo y estrategia de exportación.</p><div class="svc-price">Consultar</div><span class="svc-tag">Industria Alimentaria</span></div>
+    <div class="svc-card"><span class="svc-icon">🌐</span><h3>Plan IA Expansión Internacional PYME</h3><p>Hojas de ruta estratégicas con IA para llevar tu PYME al mercado global: análisis de entrada, adaptación cultural y marcos legales.</p><div class="svc-price"><sup>$</sup>600 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Expansión Global</span></div>
+    <div class="svc-card"><span class="svc-icon">🚀</span><h3>Desarrollo de Proyectos</h3><p>Gestión y consultoría de proyectos de ciclo completo: desde la ideación y estudios de factibilidad hasta la implementación y evaluación de impacto.</p><div class="svc-price">Consultar</div><span class="svc-tag">Proyectos</span></div>
+    <div class="svc-card"><span class="svc-icon">📚</span><h3>E-Books</h3><p>Redacción y publicación profesional de e-books sobre negocios, emprendimiento, temas académicos y guías prácticas para plataformas digitales.</p><div class="svc-price"><sup>$</sup>40 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Publicaciones</span></div>
+    <div class="svc-card"><span class="svc-icon">🔬</span><h3>Artículos Científicos</h3><p>Redacción de investigación, artículos académicos, revisiones de literatura y formateo según normas APA, MLA y estándares de revistas internacionales.</p><div class="svc-price"><sup>$</sup>50 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Investigación</span></div>
+    <div class="svc-card"><span class="svc-icon">✍️</span><h3>Blogs Técnicos y Edición de Contenido</h3><p>Redacción profesional de blogs, estrategia de contenido, optimización SEO y edición experta para elevar tu presencia digital.</p><div class="svc-price"><sup>$</sup>30 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Contenido</span></div>
+    <div class="svc-card"><span class="svc-icon">🎓</span><h3>Cursos y Capacitación</h3><p>Cursos especializados en emprendimiento, análisis de datos, marketing y redacción académica — impartidos en línea para profesionales y estudiantes.</p><div class="svc-price"><sup>$</sup>40 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Educación</span></div>
+    <div class="svc-card"><span class="svc-icon">📝</span><h3>Corrección de Tesis de Grado</h3><p>Revisión integral de tesis y disertaciones: estructura, metodología, coherencia argumentativa, gramática, citas y cumplimiento de normas académicas.</p><div class="svc-price"><sup>$</sup>50 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Académico</span></div>
+    <div class="svc-card"><span class="svc-icon">📱</span><h3>Proyecto de Marketing Digital</h3><p>Campañas digitales integrales: estrategia en redes sociales, publicidad pagada, email marketing, diseño de embudo y analítica de rendimiento.</p><div class="svc-price"><sup>$</sup>250 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Marketing</span></div>
+    <div class="svc-card"><span class="svc-icon">🤖</span><h3>Inteligencia Artificial</h3><p>Consultoría de estrategia IA, implementación de herramientas, flujos de trabajo de automatización y capacitación para aprovechar las capacidades de IA.</p><div class="svc-price">Consultar</div><span class="svc-tag">IA y Tecnología</span></div>
+    <div class="svc-card"><span class="svc-icon">🌍</span><h3>Plan de Comercio Internacional con IA</h3><p>Estrategia avanzada de comercio exterior con inteligencia artificial: análisis de mercados, logística internacional y negociación global.</p><div class="svc-price"><sup>$</sup>400 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Comercio Exterior</span></div>
+    <div class="svc-card"><span class="svc-icon">🇺🇸</span><h3>Ciclo Comex: Destino EE.UU.</h3><p>Programa especializado para exportadores que buscan ingresar al mercado estadounidense: regulaciones, logística, distribución y estrategia comercial.</p><div class="svc-price"><sup>$</sup>250 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Comex EE.UU.</span></div>
+    <div class="svc-card"><span class="svc-icon">🇪🇺</span><h3>Ciclo Comex: Destino Europa</h3><p>Programa para exportadores hacia la Unión Europea: normativas europeas, canales de distribución, certificaciones y estrategia de entrada al mercado.</p><div class="svc-price"><sup>$</sup>300 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Comex Europa</span></div>
+    <div class="svc-card"><span class="svc-icon">💻</span><h3>Diseño de Página Web</h3><p>Diseño y desarrollo de sitios web profesionales, modernos y responsivos para empresas, emprendimientos y proyectos académicos o personales.</p><div class="svc-price"><sup>$</sup>150 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Diseño Web</span></div>
+    <div class="svc-card"><span class="svc-icon">🎬</span><h3>Video de Promoción</h3><p>Producción de videos promocionales de alta calidad para empresas, productos, servicios o campañas de marketing digital.</p><div class="svc-price"><sup>$</sup>60 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Video</span></div>
+    <div class="svc-card"><span class="svc-icon">🎨</span><h3>Diseño de Logo</h3><p>Creación de identidades visuales únicas y memorables: logotipos profesionales que reflejan los valores y la esencia de tu marca.</p><div class="svc-price"><sup>$</sup>60 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Branding</span></div>
+    <div class="svc-card"><span class="svc-icon">📣</span><h3>Consultoría de Marketing</h3><p>Asesoría experta en marketing: posicionamiento de marca, análisis competitivo, mapeo del customer journey y estrategias go-to-market.</p><div class="svc-price">Consultar</div><span class="svc-tag">Consultoría</span></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Galería Visual</span>
+    <h2 class="sec-title">InnovaGlobalPro en Acción</h2>
+    <p class="sec-sub">Momentos reales, impacto real — nuestro trabajo en consultoría de negocios, análisis de datos, educación, agricultura y proyectos globales.</p>
+  </div>
+  <div class="gallery-grid">
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g1/400/200" alt="Reunión estratégica"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g2/400/200" alt="Análisis de datos"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g3/400/200" alt="Tecnología e innovación"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g4/400/200" alt="Consultor profesional"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g5/400/200" alt="Aprendizaje online"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g6/400/200" alt="Agronegocios"/></figure>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Cómo Trabajamos</span>
+    <h2 class="sec-title">Nuestro Enfoque en 4 Pasos</h2>
+    <p class="sec-sub">De la primera conversación a la entrega final — una metodología clara orientada a resultados.</p>
+  </div>
+  <div class="process-steps">
+    <div class="pstep"><div class="pstep-num">01</div><h4>Diagnóstico</h4><p>Escuchamos profundamente para entender tus objetivos, desafíos y contexto antes de proponer cualquier solución.</p></div>
+    <div class="pstep"><div class="pstep-num">02</div><h4>Estrategia</h4><p>Diseñamos un plan personalizado con hitos claros, entregables y métricas de éxito.</p></div>
+    <div class="pstep"><div class="pstep-num">03</div><h4>Ejecución</h4><p>Nuestro equipo experto entrega con precisión, manteniendo comunicación constante y adaptándose a tu feedback.</p></div>
+    <div class="pstep"><div class="pstep-num">04</div><h4>Impacto</h4><p>Medimos resultados, brindamos soporte post-entrega y aseguramos que logres un impacto tangible.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Historias de Clientes</span>
+    <h2 class="sec-title">Lo que Dicen Nuestros Clientes</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"El plan de negocios comercial que desarrollaron fue excepcional — listo para inversores, exhaustivo y entregado exactamente a tiempo. Mi ronda de financiamiento fue exitosa gracias a su trabajo."</p><div class="testi-author"><div class="testi-av">M</div><div><div class="testi-name">María González</div><div class="testi-role">CEO, Startup Innovate Ecuador</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"El servicio de análisis estadístico me dio la base académica que necesitaba para mi tesis doctoral. Metodología rigurosa e increíble capacidad de respuesta durante todo el proceso."</p><div class="testi-author"><div class="testi-av">C</div><div><div class="testi-name">Carlos Mendoza</div><div class="testi-role">Investigador PhD, Universidad ESPOL</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"El modelado de procesos BPMN reveló ineficiencias que nunca supimos que existían. Reducimos costos operativos en un 28% en solo tres meses. Equipo excepcional."</p><div class="testi-author"><div class="testi-av">R</div><div><div class="testi-name">Roberto Salinas</div><div class="testi-role">Director de Operaciones, AgroTech Cía.</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"InnovaGlobalPro nos ayudó con nuestro plan agrícola y estrategia de expansión internacional. Ahora exportamos a 3 nuevos mercados. Verdaderamente transformacional."</p><div class="testi-author"><div class="testi-av">L</div><div><div class="testi-name">Laura Viteri</div><div class="testi-role">Fundadora, Campo Verde Exports</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Su consultoría de marketing digital e IA cambió la forma en que adquirimos clientes. Nuestra tasa de conversión se duplicó en 60 días. Los recomiendo sin dudarlo."</p><div class="testi-author"><div class="testi-av">A</div><div><div class="testi-name">Ana Paredes</div><div class="testi-role">Emprendedora y Business Coach</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"El servicio de corrección de tesis fue un salvavidas. Corrigieron todo mi capítulo de metodología y el formato en tiempo récord. Mi comité lo aprobó en la primera entrega."</p><div class="testi-author"><div class="testi-av">J</div><div><div class="testi-name">Jorge Quispe</div><div class="testi-role">Graduado de Maestría, UCE</div></div></div></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag" style="color:var(--teal3)">Productos Digitales</span>
+    <h2 class="sec-title">Todo Disponible para Ti</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.5)">Desde recursos descargables hasta cursos en vivo y paquetes de consultoría — todo lo que necesitas para crecer.</p>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-item"><span class="prod-icon">📊</span><span class="prod-name">Reportes de Análisis de Datos</span></div>
+    <div class="prod-item"><span class="prod-icon">🔄</span><span class="prod-name">Diagramas BPMN</span></div>
+    <div class="prod-item"><span class="prod-icon">🏢</span><span class="prod-name">Planes de Negocios Comerciales</span></div>
+    <div class="prod-item"><span class="prod-icon">🌾</span><span class="prod-name">Planes Agrícolas</span></div>
+    <div class="prod-item"><span class="prod-icon">🐄</span><span class="prod-name">Planes Ganaderos</span></div>
+    <div class="prod-item"><span class="prod-icon">🍽️</span><span class="prod-name">Planes Industria Alimentaria</span></div>
+    <div class="prod-item"><span class="prod-icon">🌐</span><span class="prod-name">Kits de Expansión Internacional</span></div>
+    <div class="prod-item"><span class="prod-icon">📚</span><span class="prod-name">E-Books</span></div>
+    <div class="prod-item"><span class="prod-icon">🔬</span><span class="prod-name">Artículos Científicos</span></div>
+    <div class="prod-item"><span class="prod-icon">✍️</span><span class="prod-name">Blogs y Contenido</span></div>
+    <div class="prod-item"><span class="prod-icon">🎓</span><span class="prod-name">Cursos Online</span></div>
+    <div class="prod-item"><span class="prod-icon">📝</span><span class="prod-name">Corrección de Tesis</span></div>
+    <div class="prod-item"><span class="prod-icon">💻</span><span class="prod-name">Diseño de Página Web</span></div>
+    <div class="prod-item"><span class="prod-icon">📱</span><span class="prod-name">Campañas de Marketing</span></div>
+    <div class="prod-item"><span class="prod-icon">🤖</span><span class="prod-name">Implementación IA</span></div>
+    <div class="prod-item"><span class="prod-icon">🌍</span><span class="prod-name">Plan Comercio Internacional IA</span></div>
+    <div class="prod-item"><span class="prod-icon">🇺🇸</span><span class="prod-name">Ciclo Comex EE.UU.</span></div>
+    <div class="prod-item"><span class="prod-icon">🇪🇺</span><span class="prod-name">Ciclo Comex Europa</span></div>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="forms-section" id="es-forms">
+  <div class="sec-head" style="padding:0 0 14px 0">
+    <span class="sec-tag">Formularios</span>
+    <h2 class="sec-title">Inicia Tu Proyecto Con Nosotros</h2>
+    <p class="sec-sub">Elige el formulario adecuado para comenzar. Respondemos en menos de 24 horas.</p>
+  </div>
+  <div class="forms-tabs">
+    <button class="ftab active" onclick="showForm('es','es-contact',this)">📩 Contacto</button>
+    <button class="ftab" onclick="showForm('es','es-quote',this)">💼 Cotización</button>
+    <button class="ftab" onclick="showForm('es','es-newsletter',this)">📬 Newsletter</button>
+    <button class="ftab" onclick="showForm('es','es-register',this)">🎓 Registro</button>
+  </div>
+
+  <!-- FORM: CONTACTO -->
+  <div class="fpanel active" id="es-contact">
+    <div class="fcard">
+      <h3>Formulario de Contacto</h3>
+      <p class="fdesc">¿Tienes preguntas o quieres saber más sobre nuestros servicios? Escríbenos y responderemos en 24 horas.</p>
+      <form onsubmit="sendMail(event,'es-contact-ok','es',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Nombre completo *</label><input type="text" name="nombre" required placeholder="Rebeca Vargas"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@ejemplo.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Teléfono / WhatsApp</label><input type="tel" name="telefono" placeholder="+593 9XX XXX XXX"/></div>
+          <div class="fgroup"><label>Asunto *</label>
+            <select name="asunto" required>
+              <option value="">— Seleccionar —</option>
+              <option>Análisis de Datos</option><option>Plan de Negocios</option>
+              <option>Marketing Digital / IA</option><option>Expansión Internacional</option>
+              <option>Tesis / Artículo Científico</option><option>Diseño Web</option><option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgroup"><label>Mensaje *</label><textarea name="mensaje" required placeholder="Cuéntanos cómo podemos ayudarte..."></textarea></div>
+        <div class="ftrust">🔒 Tu información está segura. No compartimos tus datos.</div>
+        <button class="btn-submit" type="submit">📩 Enviar Mensaje</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pagar con PayPal</button>
+      </form>
+      <div class="form-success" id="es-contact-ok"><div class="checkmark">✓</div><h4>¡Mensaje enviado!</h4><p>Gracias por contactarnos. Responderemos en menos de 24 horas.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: COTIZACIÓN -->
+  <div class="fpanel" id="es-quote">
+    <div class="fcard">
+      <h3>Solicitud de Cotización</h3>
+      <p class="fdesc">Cuéntanos sobre tu proyecto y te enviaremos una propuesta personalizada sin compromiso.</p>
+      <form onsubmit="sendMail(event,'es-quote-ok','es',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Nombre *</label><input type="text" name="nombre" required placeholder="Tu nombre"/></div>
+          <div class="fgroup"><label>Empresa / Institución</label><input type="text" name="empresa" placeholder="Nombre de la empresa"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@empresa.com"/></div>
+          <div class="fgroup"><label>Teléfono</label><input type="tel" name="telefono" placeholder="+593 9XX XXX XXX"/></div>
+        </div>
+        <div class="fgroup"><label>Tipo de servicio requerido *</label>
+          <select name="servicio" required>
+            <option value="">— Seleccionar servicio —</option>
+            <option>Análisis de Datos / Estadísticas</option><option>Modelado BPMN</option>
+            <option>Plan de Negocios Comercial ($150)</option><option>Plan Agrícola</option>
+            <option>Plan Ganadero</option><option>Plan Alimentario</option>
+            <option>Expansión Internacional PYME ($600)</option>
+            <option>Marketing Digital ($250)</option><option>Inteligencia Artificial</option>
+            <option>Corrección de Tesis ($50)</option><option>Artículos Científicos ($50)</option>
+            <option>Cursos y Capacitación ($40)</option><option>E-Books ($40)</option>
+            <option>Blogs Técnicos ($30)</option>
+            <option>Plan Comercio Internacional IA ($400)</option>
+            <option>Ciclo Comex EE.UU. ($250)</option><option>Ciclo Comex Europa ($300)</option>
+            <option>Diseño Web ($150)</option><option>Video de Promoción ($60)</option>
+            <option>Diseño de Logo ($60)</option><option>Consultoría de Marketing</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Descripción del proyecto *</label><textarea name="descripcion" required placeholder="Describe brevemente tu proyecto, plazos y objetivos..."></textarea></div>
+        <div class="fgroup"><label>Presupuesto estimado</label>
+          <select name="presupuesto">
+            <option value="">— Rango aproximado —</option>
+            <option>Menos de $200</option><option>$200 – $500</option>
+            <option>$500 – $1,000</option><option>$1,000 – $3,000</option>
+            <option>Más de $3,000</option><option>A definir</option>
+          </select>
+        </div>
+        <div class="ftrust">🔒 Propuesta sin compromiso · Respuesta en 24h</div>
+        <button class="btn-submit" type="submit">💼 Solicitar Cotización</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pagar con PayPal</button>
+      </form>
+      <div class="form-success" id="es-quote-ok"><div class="checkmark">✓</div><h4>¡Solicitud recibida!</h4><p>Prepararemos tu cotización personalizada y la enviaremos en 24 horas.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: NEWSLETTER -->
+  <div class="fpanel" id="es-newsletter">
+    <div class="fcard">
+      <h3>Suscribirse al Newsletter</h3>
+      <p class="fdesc">Recibe tips, recursos gratuitos y noticias sobre emprendimiento, análisis de datos, IA y expansión global de negocios.</p>
+      <form onsubmit="sendMail(event,'es-news-ok','es',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Nombre *</label><input type="text" name="nombre" required placeholder="Tu nombre"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@ejemplo.com"/></div>
+        </div>
+        <div class="fgroup"><label>Preferencias de contenido</label>
+          <div class="chk-group">
+            <label class="chk-item"><input type="checkbox" checked/> <span>📊 Análisis de datos y estadísticas</span></label>
+            <label class="chk-item"><input type="checkbox" checked/> <span>🏢 Planes de negocios y emprendimiento</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>🌐 Expansión internacional y PYMES</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>🤖 Inteligencia Artificial y tecnología</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>📝 Recursos académicos y tesis</span></label>
+          </div>
+        </div>
+        <div class="ftrust">🔒 Sin spam · Cancela cuando quieras · Gratuito</div>
+        <button class="btn-submit" type="submit">📬 Suscribirme</button>
+      </form>
+      <div class="form-success" id="es-news-ok"><div class="checkmark">✓</div><h4>¡Suscripción confirmada!</h4><p>Bienvenido/a. Pronto recibirás contenido de valor en tu bandeja de entrada.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: REGISTRO -->
+  <div class="fpanel" id="es-register">
+    <div class="fcard">
+      <h3>Registro a Evento / Curso</h3>
+      <p class="fdesc">Regístrate en nuestros cursos, talleres o eventos y reserva tu lugar hoy mismo.</p>
+      <form onsubmit="sendMail(event,'es-reg-ok','es',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Nombre completo *</label><input type="text" name="nombre" required placeholder="Tu nombre completo"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@ejemplo.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Teléfono *</label><input type="tel" name="telefono" required placeholder="+593 9XX XXX XXX"/></div>
+          <div class="fgroup"><label>Empresa / Cargo</label><input type="text" name="empresa" placeholder="Empresa o cargo actual"/></div>
+        </div>
+        <div class="fgroup"><label>¿Cómo nos encontraste?</label>
+          <select name="como">
+            <option value="">— Seleccionar —</option>
+            <option>Redes sociales</option><option>Google / Internet</option>
+            <option>Recomendación de amigo</option><option>Email / Newsletter</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Requisitos especiales</label><textarea name="requisitos" placeholder="Necesidades de accesibilidad, horario preferido, etc."></textarea></div>
+        <div class="fgroup">
+          <label class="chk-item" style="margin-top:4px">
+            <input type="checkbox" required/>
+            <span style="font-size:.75rem;color:var(--gray)">Acepto los <a href="#" style="color:var(--teal)">términos y condiciones</a> y la política de privacidad *</span>
+          </label>
+        </div>
+        <button class="btn-submit" type="submit">🎓 Registrarme Ahora</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pagar con PayPal</button>
+      </form>
+      <div class="form-success" id="es-reg-ok"><div class="checkmark">✓</div><h4>¡Registro exitoso!</h4><p>Tu lugar está reservado. Te enviaremos los detalles por correo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>¿Listo para Innovar y Crecer?</h2>
+    <p>Únete a los profesionales y empresas que ya han transformado sus resultados con los servicios expertos de InnovaGlobalPro.</p>
+    <p class="cta-contact">📍 6 Montée des Romarins, 13700 Marignane, France · ✉️ info@innovaglobalpro.com</p>
+    <div class="cta-phones">
+      📞 Secretaría: <a href="tel:+593978890662">+593 978 890 662</a> &nbsp;·&nbsp;
+      📞 Soporte: <a href="tel:+593969221448">+593 969 221 448</a>
+    </div>
+    <div class="cta-btns">
+      <a href="mailto:info@innovaglobalpro.com" class="btn-white">📧 Contáctanos Hoy</a>
+      <a href="https://innovaglobalpro.com/formulario_innovaglobalpro.html" class="btn-outline-white" target="_blank">📋 Ver Formulario Completo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="p-footer">
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <span class="foot-name">InnovaGlobalPro</span>
+      <p>Rebeca Vargas · Fundadora y Directora. Conectando innovación con resultados tangibles en negocios y academia desde 2020. Tu crecimiento es nuestra misión.</p>
+      <div class="foot-contact">
+        <div class="fci">📍 <span>6 Montée des Romarins, 13700 Marignane, France</span></div>
+        <div class="fci">✉️ <a href="mailto:info@innovaglobalpro.com" class="fci">info@innovaglobalpro.com</a></div>
+        <div class="fci">📞 <span>Sec: <a href="tel:+593978890662" class="fci" style="color:rgba(255,255,255,.5)">+593 978 890 662</a> · Sop: <a href="tel:+593969221448" class="fci" style="color:rgba(255,255,255,.5)">+593 969 221 448</a></span></div>
+      </div>
+      <div class="social-row">
+        <a href="#" class="sbtn">in</a><a href="#" class="sbtn">fb</a>
+        <a href="#" class="sbtn">ig</a><a href="#" class="sbtn">wa</a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h5>Servicios</h5>
+      <ul>
+        <li><a href="#es-services">Análisis de Datos</a></li>
+        <li><a href="#es-services">Modelado BPMN</a></li>
+        <li><a href="#es-services">Planes de Negocios</a></li>
+        <li><a href="#es-services">Expansión Internacional</a></li>
+        <li><a href="#es-services">Marketing Digital</a></li>
+        <li><a href="#es-services">Inteligencia Artificial</a></li>
+        <li><a href="#es-services">Diseño Web</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Academia</h5>
+      <ul>
+        <li><a href="#es-services">Corrección de Tesis</a></li>
+        <li><a href="#es-services">Artículos Científicos</a></li>
+        <li><a href="#es-services">Blogs y Contenido</a></li>
+        <li><a href="#es-services">Cursos Online</a></li>
+        <li><a href="#es-services">E-Books</a></li>
+        <li><a href="#es-about">Sobre Nosotros</a></li>
+        <li><a href="#es-forms">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 InnovaGlobalPro · Rebeca Vargas</span>
+    <span style="color:var(--teal2)">EST. 2020 · Marignane, France</span>
+  </div>
+</footer>
+</div><!-- /panel-es -->
+
+<!-- ══ DIVIDER ══ -->
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════
+     PANEL ENGLISH
+══════════════════════════════════ -->
+<div class="panel panel-en" id="panel-en">
+<div class="pflag pflag-en">🇺🇸 &nbsp;English</div>
+
+<!-- HERO -->
+<section class="p-hero">
+  <div class="pills">
+    <span class="pill">🎓 Est. 2020</span>
+    <span class="pill">⭐ 5-Star Rated</span>
+    <span class="pill">🌍 Global Reach</span>
+  </div>
+  <h1>Connect <em>Innovation</em><br>with Tangible Results<br>in Business &amp; Academia</h1>
+  <p>InnovaGlobalPro is your strategic partner for intellectual and entrepreneurial growth — offering data analysis, business plans, digital marketing, AI implementation, thesis correction, and much more.</p>
+  <div class="hero-btns">
+    <a href="https://innovaglobalpro.com/" class="btn-glow" target="_blank">Explore Services →</a>
+    <a href="#en-about" class="btn-ghost">Learn More</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="mitem"><span class="mdot"></span>Data Analysis</span>
+    <span class="mitem"><span class="mdot"></span>BPMN Process Modeling</span>
+    <span class="mitem"><span class="mdot"></span>Commercial Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Agricultural Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Livestock Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Food Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>International Expansion</span>
+    <span class="mitem"><span class="mdot"></span>Digital Marketing</span>
+    <span class="mitem"><span class="mdot"></span>Artificial Intelligence</span>
+    <span class="mitem"><span class="mdot"></span>Thesis Correction</span>
+    <span class="mitem"><span class="mdot"></span>Scientific Articles</span>
+    <span class="mitem"><span class="mdot"></span>E-Books &amp; Courses</span>
+    <span class="mitem"><span class="mdot"></span>Web Design</span>
+    <span class="mitem"><span class="mdot"></span>Data Analysis</span>
+    <span class="mitem"><span class="mdot"></span>BPMN Process Modeling</span>
+    <span class="mitem"><span class="mdot"></span>Commercial Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Agricultural Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Livestock Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>Food Business Plan</span>
+    <span class="mitem"><span class="mdot"></span>International Expansion</span>
+    <span class="mitem"><span class="mdot"></span>Digital Marketing</span>
+    <span class="mitem"><span class="mdot"></span>Artificial Intelligence</span>
+    <span class="mitem"><span class="mdot"></span>Thesis Correction</span>
+    <span class="mitem"><span class="mdot"></span>Scientific Articles</span>
+    <span class="mitem"><span class="mdot"></span>E-Books &amp; Courses</span>
+    <span class="mitem"><span class="mdot"></span>Web Design</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-box"><div class="stat-num">10+</div><div class="stat-lbl">Clients Served</div></div>
+  <div class="stat-box"><div class="stat-num">5 ★</div><div class="stat-lbl">Average Rating</div></div>
+  <div class="stat-box"><div class="stat-num">5+</div><div class="stat-lbl">Years Exp.</div></div>
+  <div class="stat-box"><div class="stat-num">17</div><div class="stat-lbl">Service Areas</div></div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-section" id="en-about">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Who We Are</span>
+    <h2 class="sec-title">Integral Solutions for Your Professional Growth</h2>
+    <p class="sec-sub">Since 2020, InnovaGlobalPro has been transforming businesses and academic careers through a comprehensive, results-oriented approach — combining strategic consulting, data analysis, and cutting-edge technology.</p>
+  </div>
+  <ul class="check-list">
+    <li>Data analysis, statistics, and evidence-based decision-making</li>
+    <li>BPMN process modeling and business plan development</li>
+    <li>Agricultural, livestock, food, and commercial business plans</li>
+    <li>International SME expansion strategies and toolkits</li>
+    <li>Digital marketing, AI implementation, and marketing consulting</li>
+    <li>Thesis correction, scientific articles, e-books, and courses</li>
+    <li>Website design, promotional videos, and logo design</li>
+  </ul>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="en-services">
+  <div class="sec-head">
+    <span class="sec-tag">Our Expertise</span>
+    <h2 class="sec-title">17 Comprehensive Services with Pricing</h2>
+    <p class="sec-sub">A complete ecosystem of professional solutions covering business, academia, technology, and global expansion.</p>
+  </div>
+  <div class="svc-grid" style="margin-top:18px">
+    <div class="svc-card"><span class="svc-icon">📊</span><h3>Data Analysis</h3><p>Advanced statistical methods, predictive models, and data visualization to support evidence-based decisions in business and academic research.</p><div class="svc-price">Quote</div><span class="svc-tag">Analytics</span></div>
+    <div class="svc-card"><span class="svc-icon">🔄</span><h3>BPMN Process Modeling</h3><p>Professional Business Process Model and Notation diagrams to optimize workflows, eliminate bottlenecks, and document your operations clearly.</p><div class="svc-price">Quote</div><span class="svc-tag">Process Design</span></div>
+    <div class="svc-card"><span class="svc-icon">🏢</span><h3>Commercial Business Plan</h3><p>Comprehensive business plans: market analysis, financial projections, competitive strategy, and investor-ready documentation.</p><div class="svc-price"><sup>$</sup>150 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Business</span></div>
+    <div class="svc-card"><span class="svc-icon">🌾</span><h3>Agricultural Business Plan</h3><p>Specialized plans for agribusiness: crop analysis, sustainability strategies, supply chain design, and profitability models.</p><div class="svc-price">Quote</div><span class="svc-tag">Agribusiness</span></div>
+    <div class="svc-card"><span class="svc-icon">🐄</span><h3>Livestock Business Plan</h3><p>Tailored plans for livestock operations: herd management, veterinary costs, productivity metrics, and market strategy.</p><div class="svc-price">Quote</div><span class="svc-tag">Livestock</span></div>
+    <div class="svc-card"><span class="svc-icon">🍽️</span><h3>Food Business Plan</h3><p>End-to-end planning for the food industry: production, processing, distribution, branding, regulatory compliance, and export strategy.</p><div class="svc-price">Quote</div><span class="svc-tag">Food Industry</span></div>
+    <div class="svc-card"><span class="svc-icon">🌐</span><h3>AI International SME Expansion</h3><p>AI-powered strategic roadmaps to take your SME global: market entry analysis, cultural adaptation, legal frameworks, and partnership development.</p><div class="svc-price"><sup>$</sup>600 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Global Expansion</span></div>
+    <div class="svc-card"><span class="svc-icon">🚀</span><h3>Project Development</h3><p>Full-cycle project management and consulting: from ideation and feasibility studies to implementation planning and impact assessment.</p><div class="svc-price">Quote</div><span class="svc-tag">Projects</span></div>
+    <div class="svc-card"><span class="svc-icon">📚</span><h3>E-Books</h3><p>Professional e-book writing and publishing on business, entrepreneurship, academic topics, and practical guides for digital distribution.</p><div class="svc-price"><sup>$</sup>40 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Publications</span></div>
+    <div class="svc-card"><span class="svc-icon">🔬</span><h3>Scientific Articles</h3><p>Research writing, academic paper drafting, literature reviews, and formatting according to APA, MLA, and international journal standards.</p><div class="svc-price"><sup>$</sup>50 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Research</span></div>
+    <div class="svc-card"><span class="svc-icon">✍️</span><h3>Blogs &amp; Content Editing</h3><p>Professional blog writing, content strategy, SEO optimization, and expert editing to elevate your digital presence and authority.</p><div class="svc-price"><sup>$</sup>30 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Content</span></div>
+    <div class="svc-card"><span class="svc-icon">🎓</span><h3>Courses &amp; Training</h3><p>Specialized courses in entrepreneurship, data analysis, marketing, and academic writing — delivered online for professionals and students.</p><div class="svc-price"><sup>$</sup>40 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Education</span></div>
+    <div class="svc-card"><span class="svc-icon">📝</span><h3>Thesis Correction</h3><p>Comprehensive thesis and dissertation review: structure, methodology, argument coherence, grammar, citations, and academic standards compliance.</p><div class="svc-price"><sup>$</sup>50 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Academic</span></div>
+    <div class="svc-card"><span class="svc-icon">📱</span><h3>Digital Marketing Project</h3><p>Full-spectrum digital campaigns: social media strategy, paid advertising, email marketing, funnel design, and performance analytics for growth.</p><div class="svc-price"><sup>$</sup>250 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Marketing</span></div>
+    <div class="svc-card"><span class="svc-icon">🤖</span><h3>Artificial Intelligence</h3><p>AI strategy consulting, tool implementation, automation workflows, and training to help businesses leverage cutting-edge AI capabilities effectively.</p><div class="svc-price">Quote</div><span class="svc-tag">AI &amp; Tech</span></div>
+    <div class="svc-card"><span class="svc-icon">🌍</span><h3>AI International Trade Plan</h3><p>Advanced international commerce strategy with artificial intelligence: market analysis, international logistics, and global negotiation frameworks.</p><div class="svc-price"><sup>$</sup>400 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Int'l Trade</span></div>
+    <div class="svc-card"><span class="svc-icon">🇺🇸</span><h3>Comex Cycle: USA Destination</h3><p>Specialized program for exporters entering the U.S. market: regulations, logistics, distribution channels, and commercial strategy.</p><div class="svc-price"><sup>$</sup>250 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Comex USA</span></div>
+    <div class="svc-card"><span class="svc-icon">🇪🇺</span><h3>Comex Cycle: Europe Destination</h3><p>Program for exporters targeting the European Union: EU regulations, distribution channels, certifications, and market entry strategy.</p><div class="svc-price"><sup>$</sup>300 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Comex Europe</span></div>
+    <div class="svc-card"><span class="svc-icon">💻</span><h3>Website Design</h3><p>Design and development of professional, modern, and responsive websites for businesses, startups, and academic or personal projects.</p><div class="svc-price"><sup>$</sup>150 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Web Design</span></div>
+    <div class="svc-card"><span class="svc-icon">🎬</span><h3>Promotional Video</h3><p>High-quality promotional video production for companies, products, services, or digital marketing campaigns.</p><div class="svc-price"><sup>$</sup>60 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Video</span></div>
+    <div class="svc-card"><span class="svc-icon">🎨</span><h3>Logo Design</h3><p>Creation of unique and memorable visual identities: professional logos that reflect the values and essence of your brand.</p><div class="svc-price"><sup>$</sup>60 <small style="font-size:.65rem;color:var(--gray)">USD</small></div><span class="svc-tag">Branding</span></div>
+    <div class="svc-card"><span class="svc-icon">📣</span><h3>Marketing Consulting</h3><p>Expert marketing advisory: brand positioning, competitive analysis, customer journey mapping, and go-to-market strategies for sustainable growth.</p><div class="svc-price">Quote</div><span class="svc-tag">Consulting</span></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Visual Journey</span>
+    <h2 class="sec-title">InnovaGlobalPro in Action</h2>
+    <p class="sec-sub">Real moments, real impact — our work across business consulting, data analysis, education, agriculture, and global projects.</p>
+  </div>
+  <div class="gallery-grid">
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g1/400/200" alt="Strategy team meeting"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g2/400/200" alt="Data analysis at work"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g3/400/200" alt="Tech innovation workspace"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g4/400/200" alt="Professional consultant"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g5/400/200" alt="Academic learning online"/></figure>
+    <figure><img loading="lazy" src="https://picsum.photos/seed/igp_g6/400/200" alt="Agricultural business"/></figure>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">How We Work</span>
+    <h2 class="sec-title">Our 4-Step Approach</h2>
+    <p class="sec-sub">From the first conversation to final delivery — a clear, results-driven methodology.</p>
+  </div>
+  <div class="process-steps">
+    <div class="pstep"><div class="pstep-num">01</div><h4>Discovery</h4><p>We listen deeply to understand your goals, challenges, and context before proposing any solution.</p></div>
+    <div class="pstep"><div class="pstep-num">02</div><h4>Strategy</h4><p>We design a customized plan with clear milestones, deliverables, and success metrics.</p></div>
+    <div class="pstep"><div class="pstep-num">03</div><h4>Execution</h4><p>Our expert team delivers with precision, maintaining constant communication and adapting to your feedback.</p></div>
+    <div class="pstep"><div class="pstep-num">04</div><h4>Impact</h4><p>We measure results, provide post-delivery support, and ensure you achieve tangible impact.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag">Client Stories</span>
+    <h2 class="sec-title">What Our Clients Say</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"The commercial business plan they developed was outstanding — investor-ready, thorough, and delivered exactly on time. My funding round was successful thanks to their work."</p><div class="testi-author"><div class="testi-av">M</div><div><div class="testi-name">María González</div><div class="testi-role">CEO, Startup Innovate Ecuador</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"The statistical analysis service gave me the academic foundation I needed for my doctoral thesis. Rigorous methodology and incredibly responsive support throughout."</p><div class="testi-author"><div class="testi-av">C</div><div><div class="testi-name">Carlos Mendoza</div><div class="testi-role">PhD Researcher, ESPOL University</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Their BPMN process modeling revealed inefficiencies we never knew existed. We reduced operational costs by 28% in just three months. Exceptional team."</p><div class="testi-author"><div class="testi-av">R</div><div><div class="testi-name">Roberto Salinas</div><div class="testi-role">Operations Director, AgroTech Cia.</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"InnovaGlobalPro helped us with our agricultural plan and international expansion strategy. We are now exporting to 3 new markets. Truly transformational."</p><div class="testi-author"><div class="testi-av">L</div><div><div class="testi-name">Laura Viteri</div><div class="testi-role">Founder, Campo Verde Exports</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Their digital marketing and AI consulting changed how we acquire customers. Our conversion rate doubled within 60 days. I recommend them without hesitation."</p><div class="testi-author"><div class="testi-av">A</div><div><div class="testi-name">Ana Paredes</div><div class="testi-role">Entrepreneur &amp; Business Coach</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"The thesis correction service was a lifesaver. They fixed my entire methodology chapter and formatting in record time. My committee approved it on the first submission."</p><div class="testi-author"><div class="testi-av">J</div><div><div class="testi-name">Jorge Quispe</div><div class="testi-role">Master's Graduate, UCE</div></div></div></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="sec-head" style="padding:0 0 0 0">
+    <span class="sec-tag" style="color:var(--teal3)">Digital Products</span>
+    <h2 class="sec-title">Everything Available to You</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.5)">From downloadable resources to live courses and consulting packages — everything you need to grow.</p>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-item"><span class="prod-icon">📊</span><span class="prod-name">Data Analysis Reports</span></div>
+    <div class="prod-item"><span class="prod-icon">🔄</span><span class="prod-name">BPMN Diagrams</span></div>
+    <div class="prod-item"><span class="prod-icon">🏢</span><span class="prod-name">Commercial Business Plans</span></div>
+    <div class="prod-item"><span class="prod-icon">🌾</span><span class="prod-name">Agricultural Plans</span></div>
+    <div class="prod-item"><span class="prod-icon">🐄</span><span class="prod-name">Livestock Business Plans</span></div>
+    <div class="prod-item"><span class="prod-icon">🍽️</span><span class="prod-name">Food Industry Plans</span></div>
+    <div class="prod-item"><span class="prod-icon">🌐</span><span class="prod-name">International Expansion Kits</span></div>
+    <div class="prod-item"><span class="prod-icon">📚</span><span class="prod-name">E-Books</span></div>
+    <div class="prod-item"><span class="prod-icon">🔬</span><span class="prod-name">Scientific Articles</span></div>
+    <div class="prod-item"><span class="prod-icon">✍️</span><span class="prod-name">Blog Posts &amp; Content</span></div>
+    <div class="prod-item"><span class="prod-icon">🎓</span><span class="prod-name">Online Courses</span></div>
+    <div class="prod-item"><span class="prod-icon">📝</span><span class="prod-name">Thesis Correction</span></div>
+    <div class="prod-item"><span class="prod-icon">💻</span><span class="prod-name">Website Design</span></div>
+    <div class="prod-item"><span class="prod-icon">📱</span><span class="prod-name">Marketing Campaigns</span></div>
+    <div class="prod-item"><span class="prod-icon">🤖</span><span class="prod-name">AI Implementation</span></div>
+    <div class="prod-item"><span class="prod-icon">🌍</span><span class="prod-name">AI Int'l Trade Plan</span></div>
+    <div class="prod-item"><span class="prod-icon">🇺🇸</span><span class="prod-name">Comex Cycle USA</span></div>
+    <div class="prod-item"><span class="prod-icon">🇪🇺</span><span class="prod-name">Comex Cycle Europe</span></div>
+  </div>
+</section>
+
+<!-- FORMS EN -->
+<section class="forms-section" id="en-forms">
+  <div class="sec-head" style="padding:0 0 14px 0">
+    <span class="sec-tag">Forms</span>
+    <h2 class="sec-title">Start Your Project With Us</h2>
+    <p class="sec-sub">Choose the right form to get started. We respond within 24 hours.</p>
+  </div>
+  <div class="forms-tabs">
+    <button class="ftab active" onclick="showForm('en','en-contact',this)">📩 Contact</button>
+    <button class="ftab" onclick="showForm('en','en-quote',this)">💼 Quote</button>
+    <button class="ftab" onclick="showForm('en','en-newsletter',this)">📬 Newsletter</button>
+    <button class="ftab" onclick="showForm('en','en-register',this)">🎓 Registration</button>
+  </div>
+
+  <!-- FORM: CONTACT -->
+  <div class="fpanel active" id="en-contact">
+    <div class="fcard">
+      <h3>Contact Form</h3>
+      <p class="fdesc">Have questions or want to learn more about our services? Write to us and we'll respond within 24 hours.</p>
+      <form onsubmit="sendMail(event,'en-contact-ok','en',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Full name *</label><input type="text" name="nombre" required placeholder="Rebeca Vargas"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@example.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Phone / WhatsApp</label><input type="tel" name="telefono" placeholder="+1 XXX XXX XXXX"/></div>
+          <div class="fgroup"><label>Subject *</label>
+            <select name="asunto" required>
+              <option value="">— Select subject —</option>
+              <option>Data Analysis</option><option>Business Plan</option>
+              <option>Digital Marketing / AI</option><option>International Expansion</option>
+              <option>Thesis / Scientific Article</option><option>Web Design</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgroup"><label>Message *</label><textarea name="mensaje" required placeholder="Tell us how we can help you..."></textarea></div>
+        <div class="ftrust">🔒 Your information is safe. We do not share your data.</div>
+        <button class="btn-submit" type="submit">📩 Send Message</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pay with PayPal</button>
+      </form>
+      <div class="form-success" id="en-contact-ok"><div class="checkmark">✓</div><h4>Message sent!</h4><p>Thank you for contacting us. We will respond within 24 hours.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: QUOTE -->
+  <div class="fpanel" id="en-quote">
+    <div class="fcard">
+      <h3>Quote Request</h3>
+      <p class="fdesc">Tell us about your project and we'll send you a personalized proposal at no obligation.</p>
+      <form onsubmit="sendMail(event,'en-quote-ok','en',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Name *</label><input type="text" name="nombre" required placeholder="Your name"/></div>
+          <div class="fgroup"><label>Company / Institution</label><input type="text" name="empresa" placeholder="Company name"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@company.com"/></div>
+          <div class="fgroup"><label>Phone</label><input type="tel" name="telefono" placeholder="+1 XXX XXX XXXX"/></div>
+        </div>
+        <div class="fgroup"><label>Type of service required *</label>
+          <select name="servicio" required>
+            <option value="">— Select service —</option>
+            <option>Data Analysis / Statistics</option><option>BPMN Process Modeling</option>
+            <option>Commercial Business Plan ($150)</option><option>Agricultural Business Plan</option>
+            <option>Livestock Business Plan</option><option>Food Business Plan</option>
+            <option>AI International SME Expansion ($600)</option>
+            <option>Digital Marketing Project ($250)</option><option>Artificial Intelligence</option>
+            <option>Thesis Correction ($50)</option><option>Scientific Articles ($50)</option>
+            <option>Courses &amp; Training ($40)</option><option>E-Books ($40)</option>
+            <option>Technical Blogs ($30)</option>
+            <option>AI International Trade Plan ($400)</option>
+            <option>Comex Cycle: USA ($250)</option><option>Comex Cycle: Europe ($300)</option>
+            <option>Website Design ($150)</option><option>Promotional Video ($60)</option>
+            <option>Logo Design ($60)</option><option>Marketing Consulting</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Project description *</label><textarea name="descripcion" required placeholder="Briefly describe what you need, deadlines, goals..."></textarea></div>
+        <div class="fgroup"><label>Estimated budget</label>
+          <select name="presupuesto">
+            <option value="">— Approximate range —</option>
+            <option>Less than $200</option><option>$200 – $500</option>
+            <option>$500 – $1,000</option><option>$1,000 – $3,000</option>
+            <option>More than $3,000</option><option>To be defined</option>
+          </select>
+        </div>
+        <div class="ftrust">🔒 No-obligation proposal · Response within 24h</div>
+        <button class="btn-submit" type="submit">💼 Request Quote</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pay with PayPal</button>
+      </form>
+      <div class="form-success" id="en-quote-ok"><div class="checkmark">✓</div><h4>Request received!</h4><p>We'll prepare your personalized quote and send it within 24 hours.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: NEWSLETTER -->
+  <div class="fpanel" id="en-newsletter">
+    <div class="fcard">
+      <h3>Subscribe to Newsletter</h3>
+      <p class="fdesc">Receive tips, free resources and news about entrepreneurship, data analysis, AI and global business expansion.</p>
+      <form onsubmit="sendMail(event,'en-news-ok','en',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Name *</label><input type="text" name="nombre" required placeholder="Your name"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@example.com"/></div>
+        </div>
+        <div class="fgroup"><label>Content preferences</label>
+          <div class="chk-group">
+            <label class="chk-item"><input type="checkbox" checked/> <span>📊 Data analysis &amp; statistics</span></label>
+            <label class="chk-item"><input type="checkbox" checked/> <span>🏢 Business plans &amp; entrepreneurship</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>🌐 International expansion &amp; SME</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>🤖 Artificial Intelligence &amp; technology</span></label>
+            <label class="chk-item"><input type="checkbox"/> <span>📝 Academic resources &amp; thesis</span></label>
+          </div>
+        </div>
+        <div class="ftrust">🔒 No spam · Cancel anytime · Free</div>
+        <button class="btn-submit" type="submit">📬 Subscribe</button>
+      </form>
+      <div class="form-success" id="en-news-ok"><div class="checkmark">✓</div><h4>Subscription confirmed!</h4><p>Welcome! You will soon receive valuable content in your inbox.</p></div>
+    </div>
+  </div>
+
+  <!-- FORM: REGISTRATION -->
+  <div class="fpanel" id="en-register">
+    <div class="fcard">
+      <h3>Event / Course Registration</h3>
+      <p class="fdesc">Register for our courses, workshops or events and reserve your spot today.</p>
+      <form onsubmit="sendMail(event,'en-reg-ok','en',this)">
+        <div class="frow">
+          <div class="fgroup"><label>Full name *</label><input type="text" name="nombre" required placeholder="Your full name"/></div>
+          <div class="fgroup"><label>Email *</label><input type="email" name="email" required placeholder="email@example.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Phone *</label><input type="tel" name="telefono" required placeholder="+1 XXX XXX XXXX"/></div>
+          <div class="fgroup"><label>Company / Position</label><input type="text" name="empresa" placeholder="Company or current role"/></div>
+        </div>
+        <div class="fgroup"><label>How did you find us?</label>
+          <select name="como">
+            <option value="">— Select —</option>
+            <option>Social media</option><option>Google / Internet</option>
+            <option>Friend recommendation</option><option>Email / Newsletter</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Special requirements</label><textarea name="requisitos" placeholder="Accessibility needs, preferred schedule, etc."></textarea></div>
+        <div class="fgroup">
+          <label class="chk-item" style="margin-top:4px">
+            <input type="checkbox" required/>
+            <span style="font-size:.75rem;color:var(--gray)">I accept the <a href="#" style="color:var(--gold)">terms and conditions</a> and privacy policy *</span>
+          </label>
+        </div>
+        <button class="btn-submit" type="submit">🎓 Register Now</button>
+        <button class="paypal-submit" type="button" onclick="openPaypal()"><strong style="font-style:italic">Pay</strong>Pal — Pay with PayPal</button>
+      </form>
+      <div class="form-success" id="en-reg-ok"><div class="checkmark">✓</div><h4>Registration successful!</h4><p>Your spot is reserved. We will send you the details by email.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Ready to Innovate and Grow?</h2>
+    <p>Join 10+ professionals and businesses that have already transformed their results with InnovaGlobalPro's expert services.</p>
+    <p class="cta-contact">📍 6 Montée des Romarins, 13700 Marignane, France · ✉️ info@innovaglobalpro.com</p>
+    <div class="cta-phones">
+      📞 Secretary: <a href="tel:+593978890662">+593 978 890 662</a> &nbsp;·&nbsp;
+      📞 Support: <a href="tel:+593969221448">+593 969 221 448</a>
+    </div>
+    <div class="cta-btns">
+      <a href="mailto:info@innovaglobalpro.com" class="btn-white">📧 Contact Us Today</a>
+      <a href="https://innovaglobalpro.com/" class="btn-outline-white" target="_blank">🌐 View Full Site</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER EN -->
+<footer class="p-footer">
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <span class="foot-name">InnovaGlobalPro</span>
+      <p>Rebeca Vargas · Founder &amp; Director. Connecting innovation with tangible results in business and academia since 2020. Your growth is our mission.</p>
+      <div class="foot-contact">
+        <div class="fci">📍 <span>6 Montée des Romarins, 13700 Marignane, France</span></div>
+        <div class="fci">✉️ <a href="mailto:info@innovaglobalpro.com" class="fci">info@innovaglobalpro.com</a></div>
+        <div class="fci">📞 <span>Sec: <a href="tel:+593978890662" class="fci" style="color:rgba(255,255,255,.5)">+593 978 890 662</a> · Sup: <a href="tel:+593969221448" class="fci" style="color:rgba(255,255,255,.5)">+593 969 221 448</a></span></div>
+      </div>
+      <div class="social-row">
+        <a href="#" class="sbtn">in</a><a href="#" class="sbtn">fb</a>
+        <a href="#" class="sbtn">ig</a><a href="#" class="sbtn">wa</a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#en-services">Data Analysis</a></li>
+        <li><a href="#en-services">BPMN Modeling</a></li>
+        <li><a href="#en-services">Business Plans</a></li>
+        <li><a href="#en-services">International Expansion</a></li>
+        <li><a href="#en-services">Digital Marketing</a></li>
+        <li><a href="#en-services">Artificial Intelligence</a></li>
+        <li><a href="#en-services">Website Design</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Academic</h5>
+      <ul>
+        <li><a href="#en-services">Thesis Correction</a></li>
+        <li><a href="#en-services">Scientific Articles</a></li>
+        <li><a href="#en-services">Blogs &amp; Content</a></li>
+        <li><a href="#en-services">Online Courses</a></li>
+        <li><a href="#en-services">E-Books</a></li>
+        <li><a href="#en-about">About Us</a></li>
+        <li><a href="#en-forms">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 InnovaGlobalPro · Rebeca Vargas</span>
+    <span style="color:var(--gold)">EST. 2020 · Marignane, France</span>
+  </div>
+</footer>
+</div><!-- /panel-en -->
+</div><!-- /split-wrap -->
+
+<!-- SINGLE WRAP -->
+<div class="single-wrap" id="singleWrap">
+  <div class="single-tabs">
+    <button class="stab stab-es on" id="tab-es" onclick="switchTab('es')">🇪🇸 Español</button>
+    <button class="stab stab-en" id="tab-en" onclick="switchTab('en')">🇺🇸 English</button>
+  </div>
+  <div id="s-es"></div>
+  <div id="s-en" style="display:none"></div>
+</div>
+
+</div><!-- /main-wrap -->
+
+<script>
+var isSplit=true, activeView='split', activeTab='es';
+
+function toggleView(){
+  isSplit=!isSplit;
+  if(isSplit){
+    document.body.className='mode-split';
+    document.getElementById('vtlabel').textContent='Vista Dividida ON';
+    document.querySelector('.vtdot').style.background='var(--teal3)';
+  } else {
+    document.body.className='mode-single';
+    document.getElementById('vtlabel').textContent='Vista Dividida OFF';
+    document.querySelector('.vtdot').style.background='var(--gold)';
+    var ses=document.getElementById('s-es');
+    var sen=document.getElementById('s-en');
+    if(!ses.hasChildNodes()){
+      ses.innerHTML=document.getElementById('panel-es').innerHTML;
+      sen.innerHTML=document.getElementById('panel-en').innerHTML;
+    }
+    switchTab(activeTab);
+  }
+}
+
+function setView(lang){
+  activeTab=lang;
+  var pe=document.getElementById('pill-es');
+  var pen=document.getElementById('pill-en');
+  if(lang==='es'){
+    pe.className='lbtn lbtn-es';
+    pen.className='lbtn lbtn-en';
+  } else {
+    pe.className='lbtn lbtn-es es-inactive';
+    pen.className='lbtn lbtn-en en-active';
+  }
+  if(!isSplit) switchTab(lang);
+}
+
+function switchTab(lang){
+  activeTab=lang;
+  document.getElementById('s-es').style.display=lang==='es'?'block':'none';
+  document.getElementById('s-en').style.display=lang==='en'?'block':'none';
+  document.getElementById('tab-es').className='stab stab-es'+(lang==='es'?' on':'');
+  document.getElementById('tab-en').className='stab stab-en'+(lang==='en'?' on':'');
+}
+
+function showForm(lang, id, btn){
+  var prefix=lang+'-';
+  var panels=btn.closest('.forms-section').querySelectorAll('.fpanel');
+  panels.forEach(function(p){p.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  var tabs=btn.closest('.forms-tabs').querySelectorAll('.ftab');
+  tabs.forEach(function(t){t.classList.remove('active')});
+  btn.classList.add('active');
+}
+
+function sendMail(e, successId, lang, form){
+  e.preventDefault();
+  var data={};
+  form.querySelectorAll('input,select,textarea').forEach(function(el){
+    if(el.name) data[el.name]=el.value;
+  });
+  var subject=encodeURIComponent('InnovaGlobalPro - '+(lang==='es'?'Consulta':'Inquiry')+' - '+(data.nombre||'')+(data.asunto?' - '+data.asunto:data.servicio?' - '+data.servicio:''));
+  var bodyLines=['--- InnovaGlobalPro '+(lang==='es'?'Mensaje':'Message')+' ---'];
+  Object.keys(data).forEach(function(k){if(data[k]) bodyLines.push(k+': '+data[k]);});
+  var body=encodeURIComponent(bodyLines.join('\n'));
+  window.location.href='mailto:info@innovaglobalpro.com?subject='+subject+'&body='+body;
+  setTimeout(function(){
+    var card=form.closest('.fcard');
+    if(card){
+      form.style.display='none';
+      var ok=card.querySelector('#'+successId)||document.getElementById(successId);
+      if(ok){ok.style.display='block';}
+    }
+  },400);
+}
+
+function openPaypal(){
+  window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=info@innovaglobalpro.com&currency_code=USD','_blank');
+}
+</script>
+</body>
+</html>
